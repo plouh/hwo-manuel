@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Hello World Open</title>
+    <style type="text/css">
+        body {text-align:center;
+            text-size:150%;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .textInput
+        {
+            background: #cccccc;
+            font-size: 200%;
+            -webkit-box-shadow: 1px 1px 2px #211f21;
+            -moz-box-shadow: 1px 1px 2px #211f21;
+            box-shadow: 1px 1px 2px #211f21;
+        }
+
+        .textOutput
+        {
+            background: #cccccc;
+            font-size: 200%;
+
+            -webkit-box-shadow: 1px 1px 2px #211f21;
+            -moz-box-shadow: 1px 1px 2px #211f21;
+            box-shadow: 1px 1px 2px #211f21;
+        }
+
+        .button
+        {width:100px;
+            height:40px;
+            font-size: 180%}
+    </style>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+    <script>
+        var socket;
+
+        function openWebSocket() {
+            if (window.WebSocket) {
+                socket = new WebSocket('ws://127.0.0.1:7070/');
+                socket.onopen    = function(event) { alert('WebSocket open!');  };
+                socket.onclose   = function(event) { alert('WebSocket closed'); };
+                socket.onmessage = function(event) { parse(event.data);         };
+            } else {
+                alert('Your browser does not support WebSockets yet.');
+            }
+        }
+
+        function closeWebSocket() {
+            socket.close();
+        }
+
+        function send(message) {
+            if (!window.WebSocket) { return; }
+            if (socket.readyState == WebSocket.OPEN) {
+                socket.send(message);
+            } else {
+                alert('The WebSocket is not open dude!');
+            }
+        }
+
+        function parse( response ) {
+            // parse response: json or xml, etc
+            console.log(response);
+            $('#gameArea').attr('src', response);
+            console.log( $('#gameArea') );
+        }
+
+    </script>
+    <style>
+    html, body, iframe {
+    	width: 100%;
+    	height: 100%;
+    	border: none;
+    	margin: 0;
+    	padding: 0;
+    }
+    </style>
+</head>
+
+<body onload='openWebSocket()' onunload='closeWebSocket()'>
+<iframe id="gameArea"></iframe>
+</body>
+</html>
