@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    android:padding="10pt">
+
+
+  <TextView
+          android:id="@+id/serveriLabel"
+          android:textSize="4pt"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="Palvelin: " />
+
+  <EditText
+          android:id="@+id/serveri"
+          android:text="boris.helloworldopen.fi"
+          android:textSize="4pt"
+          android:layout_width="fill_parent"
+          android:layout_height="wrap_content"/>
+
+  <TextView
+          android:id="@+id/eskonNimiLabel"
+          android:textSize="4pt"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="Nimi: " />
+
+  <EditText
+        android:id="@+id/eskonNimi"
+        android:text="Manuel"
+        android:textSize="4pt"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"/>
+
+  <TextView
+          android:id="@+id/vastustajaLabel"
+          android:textSize="4pt"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="Haasta vastustaja: " />
+
+  <EditText
+          android:id="@+id/vastustaja"
+          android:textSize="4pt"
+          android:text=""
+          android:layout_width="fill_parent"
+          android:layout_height="wrap_content"/>
+
+  <TextView
+          android:id="@+id/visuServeriLabel"
+          android:textSize="4pt"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="Visualisointipalvelin: " />
+
+  <EditText
+          android:id="@+id/visuServeri"
+          android:textSize="4pt"
+          android:layout_width="fill_parent"
+          android:layout_height="wrap_content"/>
+
+  <RelativeLayout
+          android:layout_width="fill_parent"
+          android:layout_height="fill_parent">
+
+    <Button
+            android:id="@+id/ruiluta"
+            android:textSize="4pt"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:text="Ala ruiluttamaan!"
+            android:layout_alignParentBottom="true"/>
+
+  </RelativeLayout>
+
+</LinearLayout>
