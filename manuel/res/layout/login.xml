@@ -82,14 +82,28 @@
             android:layout_height="fill_parent"
             android:orientation="vertical">
 
+    <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="horizontal">
       <Button
-              android:id="@+id/moukari"
+              android:id="@+id/haasta"
               android:textSize="4pt"
               android:layout_width="fill_parent"
               android:layout_height="wrap_content"
               android:layout_weight="1"
               android:layout_gravity="bottom"
-              android:text="Haasta Moukari" />
+              android:text="Haasta Vastustaja" />
+
+      <Button
+                android:id="@+id/moukari"
+                android:textSize="4pt"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_gravity="bottom"
+                android:text="Haasta Moukari" />
+      </LinearLayout>
 
       <LinearLayout
               android:layout_width="fill_parent"
@@ -138,15 +152,6 @@
                 android:layout_weight="1"
                 android:text="Haasta Jebin" />
         </LinearLayout>
-
-        <Button
-                android:id="@+id/haasta"
-                android:textSize="4pt"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_gravity="bottom"
-                android:text="Haasta Vastustaja" />
 
     </LinearLayout>
 
