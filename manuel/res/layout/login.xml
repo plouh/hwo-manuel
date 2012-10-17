@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+  <LinearLayout
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical"
@@ -11,14 +15,18 @@
           android:textSize="4pt"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:text="Palvelin: " />
+          android:text="Palvelin: "
+          android:visibility="gone"
+          />
 
   <EditText
           android:id="@+id/serveri"
           android:text="boris.helloworldopen.fi"
           android:textSize="4pt"
           android:layout_width="fill_parent"
-          android:layout_height="wrap_content"/>
+          android:layout_height="wrap_content"
+          android:visibility="gone"
+          />
 
   <TextView
           android:id="@+id/eskonNimiLabel"
@@ -39,7 +47,7 @@
           android:textSize="4pt"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:text="Haasta vastustaja: " />
+          android:text="Vastustaja: " />
 
   <EditText
           android:id="@+id/vastustaja"
@@ -53,27 +61,95 @@
           android:textSize="4pt"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:text="Visualisointipalvelin: " />
+          android:text="Visualisointipalvelin: "
+          android:visibility="gone"
+          />
 
   <EditText
           android:id="@+id/visuServeri"
           android:textSize="4pt"
           android:layout_width="fill_parent"
-          android:layout_height="wrap_content"/>
+          android:layout_height="wrap_content"
+          android:visibility="gone"
+          />
 
   <RelativeLayout
           android:layout_width="fill_parent"
           android:layout_height="fill_parent">
 
-    <Button
-            android:id="@+id/ruiluta"
-            android:textSize="4pt"
+    <LinearLayout
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:text="Ala ruiluttamaan!"
-            android:layout_alignParentBottom="true"/>
+            android:layout_height="fill_parent"
+            android:orientation="vertical">
+
+      <Button
+              android:id="@+id/moukari"
+              android:textSize="4pt"
+              android:layout_width="fill_parent"
+              android:layout_height="wrap_content"
+              android:layout_weight="1"
+              android:layout_gravity="bottom"
+              android:text="Haasta Moukari" />
+
+      <LinearLayout
+              android:layout_width="fill_parent"
+              android:layout_height="fill_parent"
+              android:orientation="horizontal">
+
+          <Button
+                  android:id="@+id/sauron"
+                  android:textSize="4pt"
+                  android:layout_width="fill_parent"
+                  android:layout_height="wrap_content"
+                  android:layout_weight="1"
+                  android:layout_gravity="bottom"
+                  android:text="Haasta Sauron" />
+
+          <Button
+                  android:id="@+id/pukku"
+                  android:textSize="4pt"
+                  android:layout_width="fill_parent"
+                  android:layout_height="wrap_content"
+                  android:layout_gravity="bottom"
+                  android:layout_weight="1"
+                  android:text="Haasta Pukku" />
+      </LinearLayout>
+
+      <LinearLayout
+              android:layout_width="fill_parent"
+              android:layout_height="fill_parent"
+              android:orientation="horizontal">
+
+        <Button
+                android:id="@+id/apricot"
+                android:textSize="4pt"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_gravity="bottom"
+                android:text="Haasta Apricot" />
+
+        <Button
+                android:id="@+id/jebin"
+                android:textSize="4pt"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_weight="1"
+                android:text="Haasta Jebin" />
+        </LinearLayout>
+
+        <Button
+                android:id="@+id/haasta"
+                android:textSize="4pt"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_gravity="bottom"
+                android:text="Haasta Vastustaja" />
+
+    </LinearLayout>
 
   </RelativeLayout>
-
-</LinearLayout>
+  </LinearLayout>
+</ScrollView>

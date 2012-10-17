@@ -21,27 +21,34 @@ public class Login extends Activity {
 
     font = Typeface.createFromAsset(this.getAssets(), "PressStart2P-Regular.ttf");
 
-    final EditText server = (EditText) findViewById(R.id.serveri);
+//    final EditText server = (EditText) findViewById(R.id.serveri);
+    final String server = "10.0.1.20";
     final EditText text = (EditText) findViewById(R.id.eskonNimi);
     final EditText opponent = (EditText) findViewById(R.id.vastustaja);
     final EditText visu = (EditText) findViewById(R.id.visuServeri);
 
     final SharedPreferences prefs = getPreferences(MODE_PRIVATE);
-    setFromPreferences(server, "server", prefs);
+//    setFromPreferences(server, "server", prefs);
     setFromPreferences(text, "name", prefs);
     setFromPreferences(opponent, "opponent", prefs);
     setFromPreferences(visu, "visu", prefs);
 
     setFont(R.id.eskonNimiLabel, R.id.serveriLabel, R.id.vastustajaLabel, R.id.visuServeriLabel,
-            R.id.eskonNimi, R.id.serveri, R.id.vastustaja, R.id.visuServeri, R.id.ruiluta);
+            R.id.eskonNimi, R.id.serveri, R.id.vastustaja, R.id.visuServeri, R.id.haasta, R.id.moukari,
+            R.id.sauron, R.id.pukku, R.id.apricot, R.id.jebin);
 
-    Button go = (Button) findViewById(R.id.ruiluta);
+    addChallengeButton(R.id.moukari, server, "moukari");
+    addChallengeButton(R.id.sauron, server, "sauron");
+    addChallengeButton(R.id.pukku, server, "pukku");
+    addChallengeButton(R.id.apricot, server, "apricot");
+    addChallengeButton(R.id.jebin, server, "jebin");
 
+    Button go = (Button) findViewById(R.id.haasta);
     go.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View view) {
         SharedPreferences.Editor editor = getPreferences(MODE_PRIVATE).edit();
-        editor.putString("server", server.getText().toString());
+        editor.putString("server", server);
         editor.putString("username", text.getText().toString());
         editor.putString("opponent", opponent.getText().toString());
         editor.putString("visu", visu.getText().toString());
@@ -50,13 +57,28 @@ public class Login extends Activity {
         Log.e(TAG, prefs.getString("visuServer", ""));
 
         Intent intent = new Intent(getApplicationContext(), Manuel.class);
-        intent.putExtra("server", server.getText().toString());
+        intent.putExtra("server", server);
         intent.putExtra("username", text.getText().toString());
         intent.putExtra("opponent", opponent.getText().toString());
-        intent.putExtra("visuServer", visu.getText().toString());
         startActivity(intent);
       }
     });
+  }
+
+  private void addChallengeButton(int buttonId, final String server, final String opponent) {
+    Button go = (Button) findViewById(buttonId);
+    go.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        final EditText text = (EditText) findViewById(R.id.eskonNimi);
+        Intent intent = new Intent(getApplicationContext(), Manuel.class);
+        intent.putExtra("server", server);
+        intent.putExtra("username", text.getText().toString());
+        intent.putExtra("opponent", opponent);
+        startActivity(intent);
+      }
+    });
+
   }
 
   private void setFromPreferences(EditText field, String key, SharedPreferences values) {

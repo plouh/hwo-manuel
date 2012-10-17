@@ -10,6 +10,7 @@ import android.hardware.SensorManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -28,7 +29,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class Manuel extends Activity
-        implements SensorEventListener, TCPClient.OnMessageReceived {
+        implements SensorEventListener, TCPClient.OnMessageReceived, Handler.Callback {
 
   private static final String TAG = "Manuel";
 
@@ -82,11 +83,11 @@ public class Manuel extends Activity
 
   private boolean gameIsOn = false;
 
-  private boolean missileReady = false;
+  private int missilesReady = 0;
   private boolean fired = false;
 
-  private MediaPlayer player;
-  private MediaPlayer effects;
+//  private MediaPlayer player;
+//  private MediaPlayer effects;
   private Typeface font;
   private String leftUser = "";
   private String rightUser = "  ";
@@ -97,7 +98,7 @@ public class Manuel extends Activity
     setContentView(R.layout.main);
 
     font = Typeface.createFromAsset(this.getAssets(), "PressStart2P-Regular.ttf");
-    player = MediaPlayer.create(getApplicationContext(), R.raw.game);
+//    player = MediaPlayer.create(getApplicationContext(), R.raw.game);
 
     getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
@@ -120,7 +121,7 @@ public class Manuel extends Activity
             1000, TIME_CONSTANT);
 
     // GUI stuff
-    mHandler = new Handler();
+    mHandler = new Handler(this);
     d.setRoundingMode(RoundingMode.HALF_UP);
     d.setMaximumFractionDigits(3);
     d.setMinimumFractionDigits(3);
@@ -146,7 +147,7 @@ public class Manuel extends Activity
     final String visuServer = getIntent().getStringExtra("visuServer");
 
     Log.i(TAG, "connecting " + username + " to ws://" + server);
-    client = new TCPClient(server, 9090, this);
+    client = new TCPClient("10.0.1.20", 9090, this);
 
     try {
       if (visuServer == null || visuServer.trim().equals("")) {
@@ -174,13 +175,15 @@ public class Manuel extends Activity
     } catch (WebSocketException e) {
       Log.e(TAG, "Visu connection error", e);
     }
+
   }
 
   private void connect(String username, String opponent) {
     try {
       new Thread(client).start();
       Thread.sleep(1000);
-      player.start();
+      mHandler.sendEmptyMessageDelayed(SEND_MESSAGE, 60);
+//      player.start();
     } catch (InterruptedException e) {
       e.printStackTrace();
     }
@@ -189,6 +192,34 @@ public class Manuel extends Activity
       client.sendMessage("{\"msgType\":\"join\",\"data\":\"" + username + "\"}");
     else
       client.sendMessage("{\"msgType\":\"requestDuel\",\"data\":[\"" + username + "\", \"" + opponent + "\"]}");
+  }
+
+  private static final int SEND_MESSAGE = 100;
+
+  @Override
+  public boolean handleMessage(Message message) {
+    switch (message.what) {
+      case SEND_MESSAGE:
+        sendMessage();
+        return true;
+      default:
+        return false;
+    }
+  }
+
+  private void sendMessage() {
+    if (gameIsOn) {
+      Log.d(TAG, "SendMessage!");
+      if (missilesReady > 0 && fired) {
+        missilesReady--;
+        fired = false;
+        client.sendMessage("{\"msgType\":\"launchMissile\"}");
+      } else {
+        client.sendMessage("{\"msgType\":\"changeDir\",\"data\":" + formatActionJson() + "}");
+      }
+    }
+
+    mHandler.sendEmptyMessageDelayed(SEND_MESSAGE, 60);
   }
 
   @Override
@@ -219,7 +250,7 @@ public class Manuel extends Activity
         });
       }
       else if (msgType.equals("missileReady")) {
-        missileReady = true;
+        missilesReady++;
       }
       else if (msgType.equals("joined")) {
         Log.d(TAG, "Visulator at " + object.getString("data"));
@@ -229,17 +260,14 @@ public class Manuel extends Activity
 
       if (!gameIsOn)
         return;
-
-      if (missileReady && fired) {
-        missileReady = false;
-        fired = false;
-        client.sendMessage("{\"msgType\":\"launchMissile\"}");
-      } else {
-        client.sendMessage("{\"msgType\":\"changeDir\",\"data\":" + formatActionJson() + "}");
-      }
     } catch (Exception e) {
       Log.e(TAG, "error", e);
     }
+  }
+
+  @Override
+  public void disconnected() {
+    finish();
   }
 
   private void updatePlayerScores(String winner) {
@@ -257,9 +285,7 @@ public class Manuel extends Activity
   @Override
   public void onStop() {
     super.onStop();
-    client.stopClient();
-    connection.disconnect();
-    player.stop();
+    Log.v(TAG, "pstoped");
     // unregister sensor listeners to prevent the activity from draining the device's battery.
     mSensorManager.unregisterListener(this);
   }
@@ -267,6 +293,10 @@ public class Manuel extends Activity
   @Override
   protected void onPause() {
     super.onPause();
+    Log.v(TAG, "pasued");
+    client.stopClient();
+    connection.disconnect();
+//    player.stop();
     // unregister sensor listeners to prevent the activity from draining the device's battery.
     mSensorManager.unregisterListener(this);
   }
@@ -294,8 +324,7 @@ public class Manuel extends Activity
   }
 
   @Override
-  public void onAccuracyChanged(Sensor sensor, int accuracy) {
-  }
+  public void onAccuracyChanged(Sensor sensor, int accuracy) {}
 
   @Override
   public void onSensorChanged(SensorEvent event) {
@@ -477,10 +506,9 @@ public class Manuel extends Activity
   // **************************** GUI FUNCTIONS *********************************
 
   public String formatActionJson() {
-    double value = -Math.max(Math.min(fusedOrientation[1] * 2, 1.0), -1.0);
+    double value = -Math.max(Math.min(fusedOrientation[1] * 3, 1.0), -1.0);
     if (Math.abs(value) < 0.1)
       value = 0.0;
-    Log.i(TAG, "Sending value " + value);
     return Double.toString(value);
   }
 
