@@ -31,11 +31,12 @@ public class TCPClient implements Runnable {
   }
 
   public void sendMessage(String message) {
-    if (out != null && !out.checkError()) {
+    if (out != null) {
       out.println(message);
       out.flush();
     } else {
       Log.e("TCP", "error");
+      stopClient();
     }
   }
 
@@ -59,8 +60,8 @@ public class TCPClient implements Runnable {
         while (mRun) {
           try {
             serverMessage = in.readLine();
-            Log.v("TCP", "Received message " + serverMessage);
             if (serverMessage != null && mMessageListener != null) {
+              Log.v("TCP", "Received message " + serverMessage);
               mMessageListener.messageReceived(serverMessage);
             }
             serverMessage = null;
@@ -69,9 +70,9 @@ public class TCPClient implements Runnable {
       } catch (Exception e) {
         Log.e("TCP", "S: Error", e);
       } finally {
-        Log.e("TCP", "Disconnecting from server");
-        socket.close();
+        Log.i("TCP", "Disconnecting from server");
         mMessageListener.disconnected();
+        socket.close();
         }
     } catch (Exception e) {
       Log.e("TCP", "C: Error", e);

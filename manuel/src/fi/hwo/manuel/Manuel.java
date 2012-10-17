@@ -147,7 +147,7 @@ public class Manuel extends Activity
     final String visuServer = getIntent().getStringExtra("visuServer");
 
     Log.i(TAG, "connecting " + username + " to ws://" + server);
-    client = new TCPClient("10.0.1.20", 9090, this);
+    client = new TCPClient("10.0.1.5", 9090, this);
 
     try {
       if (visuServer == null || visuServer.trim().equals("")) {
@@ -217,9 +217,10 @@ public class Manuel extends Activity
       } else {
         client.sendMessage("{\"msgType\":\"changeDir\",\"data\":" + formatActionJson() + "}");
       }
-    }
 
-    mHandler.sendEmptyMessageDelayed(SEND_MESSAGE, 60);
+      mHandler.removeMessages(SEND_MESSAGE);
+      mHandler.sendEmptyMessageDelayed(SEND_MESSAGE, 60);
+    }
   }
 
   @Override
@@ -229,6 +230,7 @@ public class Manuel extends Activity
       final JSONObject object = new JSONObject(message);
       String msgType = object.getString("msgType");
       if (msgType.equals("gameStarted")) {
+        Log.v(TAG, "Game started");
         gameIsOn = true;
         JSONArray players = object.getJSONArray("data");
         leftUser = players.getString(0);
@@ -239,6 +241,8 @@ public class Manuel extends Activity
             updatePlayernames(leftUser, rightUser);
           }
         });
+        mHandler.removeMessages(SEND_MESSAGE);
+        mHandler.sendEmptyMessage(SEND_MESSAGE);
       } else if (msgType.equals("gameIsOver")) {
         gameIsOn = false;
         final String winner = object.getString("data");
@@ -257,9 +261,6 @@ public class Manuel extends Activity
         if (connection.isConnected())
           connection.sendTextMessage(object.getString("data"));
       }
-
-      if (!gameIsOn)
-        return;
     } catch (Exception e) {
       Log.e(TAG, "error", e);
     }
@@ -267,6 +268,8 @@ public class Manuel extends Activity
 
   @Override
   public void disconnected() {
+    Log.v(TAG, "disconnected");
+    gameIsOn = false;
     finish();
   }
 
