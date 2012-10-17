@@ -12,11 +12,13 @@
                 android:screenOrientation="landscape">
         </activity>
         <activity android:name=".Login" android:label="Manuel">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
         </activity>
+      <activity android:name=".HelloWorld" android:label="Manuel" android:excludeFromRecents="true">
+        <intent-filter>
+          <action android:name="android.intent.action.MAIN"/>
+          <category android:name="android.intent.category.LAUNCHER"/>
+        </intent-filter>
+      </activity>
     </application>
     <uses-permission android:name="android.permission.INTERNET"/>
 </manifest>
