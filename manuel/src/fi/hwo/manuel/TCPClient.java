@@ -5,6 +5,7 @@ import android.util.Log;
 import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 
 
 public class TCPClient implements Runnable {
@@ -49,25 +50,29 @@ public class TCPClient implements Runnable {
 
     try {
       Socket socket = new Socket(InetAddress.getByName(server), port);
+      socket.setSoTimeout(5000);
 
       try {
         out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())), true);
         in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
         while (mRun) {
-          serverMessage = in.readLine();
-          Log.d("TCP", "message from " + server + ":" + port + "\n\n" + serverMessage);
-
-          if (serverMessage != null && mMessageListener != null) {
-            mMessageListener.messageReceived(serverMessage);
-          }
-          serverMessage = null;
+          try {
+            serverMessage = in.readLine();
+            Log.v("TCP", "Received message " + serverMessage);
+            if (serverMessage != null && mMessageListener != null) {
+              mMessageListener.messageReceived(serverMessage);
+            }
+            serverMessage = null;
+          } catch (SocketTimeoutException ste) {}
         }
       } catch (Exception e) {
         Log.e("TCP", "S: Error", e);
       } finally {
+        Log.e("TCP", "Disconnecting from server");
         socket.close();
-      }
+        mMessageListener.disconnected();
+        }
     } catch (Exception e) {
       Log.e("TCP", "C: Error", e);
     }
@@ -75,5 +80,6 @@ public class TCPClient implements Runnable {
 
   public interface OnMessageReceived {
     public void messageReceived(String message);
+    void disconnected();
   }
 }
